@@ -21,7 +21,7 @@ Add it in your root build.gradle at the end of repositories:
 ### Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.sheetalkumar105:ZoomImageView-android:Tag'
+	        implementation 'com.github.sheetalkumar105:ZoomImageView-android:1.02'
 	}
 
 ### Step 3. Add ZoomImageView in your layout

@@ -9,6 +9,7 @@
     android:background="#cccccc">
 
     <com.impulsive.zoomimageview.ZoomImageView
+        android:id="@+id/zoomImageView1"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:src="@drawable/sample"
@@ -17,12 +18,20 @@
         app:scaledown="true"
         />
     <com.impulsive.zoomimageview.ZoomImageView
+        android:id="@+id/zoomImageView2"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:src="@drawable/sample"
         android:scaleType="matrix"
         app:rotation="false"
         app:scaledown="false"
+        />
+
+    <Button
+        android:id="@+id/btnReset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reset"
         />
 
 </LinearLayout>

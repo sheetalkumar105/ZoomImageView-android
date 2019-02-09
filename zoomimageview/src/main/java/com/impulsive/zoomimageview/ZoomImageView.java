@@ -9,6 +9,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,6 +42,7 @@ public class ZoomImageView extends ImageView implements View.OnTouchListener {
 	boolean rotation = true;
 	boolean scaledown = true;
 	boolean initStatus = false;
+    float init_scale = 0;
 
 	public ZoomImageView(Context context) {
 		this(context, null, R.styleable.ZoomImageView_ZoomImageViewDefault);
@@ -78,14 +80,31 @@ public class ZoomImageView extends ImageView implements View.OnTouchListener {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(!initStatus){
+        if(!initStatus && getDrawable()!=null){
             RectF drawableRect = new RectF(0, 0, getDrawable().getIntrinsicWidth(), getDrawable().getIntrinsicHeight());
             RectF viewRect = new RectF(0, 0,  getWidth(), getHeight());
             matrix.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.CENTER);
             setImageMatrix(matrix);
             initStatus = true;
+            Matrix m = getImageMatrix();
+            float[] vals = new float[9];
+            m.getValues(vals);
+            for(int i=0; i< vals.length; i++){
+                if(i==0)
+                    init_scale = vals[0];
+                break;
+            }
         }
         super.onDraw(canvas);
+    }
+
+    public void resetImage(){
+	    if(getDrawable()!=null){
+            RectF drawableRect = new RectF(0, 0, getDrawable().getIntrinsicWidth(), getDrawable().getIntrinsicHeight());
+            RectF viewRect = new RectF(0, 0,  getWidth(), getHeight());
+            matrix.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.CENTER);
+            setImageMatrix(matrix);
+        }
     }
 
 
@@ -120,6 +139,9 @@ public class ZoomImageView extends ImageView implements View.OnTouchListener {
         double radians = Math.atan2(delta_y, delta_x);
         return (float) Math.toDegrees(radians);
     }
+
+
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -160,8 +182,6 @@ public class ZoomImageView extends ImageView implements View.OnTouchListener {
                     if (newDist > 10f) {
                         matrix.set(savedMatrix);
                         float scale = (newDist / oldDist);
-                        if(scaledown==false && scale < 1)
-                            scale = 1;
                         matrix.postScale(scale, scale, mid.x, mid.y);
                     }
                     if (lastEvent != null && event.getPointerCount() == 2 || event.getPointerCount() == 3) {
@@ -181,9 +201,18 @@ public class ZoomImageView extends ImageView implements View.OnTouchListener {
                 break;
         }
 
-
-        //matrix.setScale(0.5f,0.5f);
         setImageMatrix(matrix);
+        float[] vals = new float[9];
+        matrix.getValues(vals);
+        for(int i=0; i< vals.length; i++){
+            if(scaledown==false && ((i==0 && vals[i]<init_scale) )){
+                RectF drawableRect = new RectF(0, 0, getDrawable().getIntrinsicWidth(), getDrawable().getIntrinsicHeight());
+                RectF viewRect = new RectF(0, 0,  getWidth(), getHeight());
+                matrix.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.CENTER);
+                setImageMatrix(matrix);
+            }
+            break;
+        }
         invalidate();
         return true;
     }

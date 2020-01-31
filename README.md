@@ -44,3 +44,6 @@ app:scaledown="true" // Allow to ZoomOut less than container size. Default value
 Demo is available on DevStudioOnline:
 [Zoom or Rotate image on pinch or touch in Android ImageView](https://devstudioonline.com/article/zoom-or-rotate-image-on-pinch-or-touch-in-android-imageview)
 
+Live app used this library:
+[Romantic Photo Frame](https://play.google.com/store/apps/details?id=com.smartappspro.photoframe)
+
